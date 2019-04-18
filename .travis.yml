@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install: 
+  - docker build -t dannypark/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run dannypark/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t dannypark/multi-client ./client
+  - docker build -t dannypark/multi-nginx ./nginx
+  - docker build -t dannypark/multi-server ./server
+  - docker build -t dannypark/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Take those images and push thme to docker hub 
+  - docker push dannypark/multi-client
+  - docker push dannypark/multi-nginx
+  - docker push dannypark/multi-server
+  - docker push dannypark/multi-worker
