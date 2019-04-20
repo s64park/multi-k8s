@@ -21,3 +21,17 @@ after_success:
   - docker push sanghyun64/multi-nginx
   - docker push sanghyun64/multi-server
   - docker push sanghyun64/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-northeast-2"
+  app: "multi-dockers"
+  env: "MultiDockers-env"
+  bucket_name: "elasticbeanstalk-ap-northeast-2-925100980723"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+  
